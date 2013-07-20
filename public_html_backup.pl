@@ -1,11 +1,14 @@
 #!/usr/bin/perl -w
 
 use DateTime;
+use File::Basename;
+$dirname = dirname(__FILE__);
 $currentDate = DateTime->now();
-$archiveFilename = "public_html_backup$currentDate.tar.gz";
-$command = "tar -czvf $archiveFilename /home/justin/public_html";
+$archiveFilename = "/home/justin/backups/public_html_backup/public_html_backup$currentDate.tar.gz";
+$archiveFilename =~ s/:/-/g;
+$command = "cd /home/justin/ && tar -czvf $archiveFilename public_html";
 
-$ignoresFilename = 'ignore.txt';
+$ignoresFilename = "$dirname/ignore.txt";
 if(-e $ignoresFilename) {
 	open(FILE, $ignoresFilename) or die 'Error reading the settings file';
 	chomp(@ignores = <FILE>);
@@ -15,4 +18,7 @@ if(-e $ignoresFilename) {
 	close(FILE);
 }
 
-print $command;
+$command .= " && cd -";
+
+print `$command`;
+print "done";
