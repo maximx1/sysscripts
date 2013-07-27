@@ -5,18 +5,21 @@ opendir($dir, "./") or die "Couldn't read directory!";
 
 $filesListLength = $#files;
 for($i = 0; $i < $filesListLength; $i++) {
-	if($files[$i] eq "transcode.pl") {
+	print $files[$i] . "\n";
+	if($files[$i] eq $0) {
 		splice(@files, $i, 1);
 	}
 	$filesListLength = $#files;
 }
 
-foreach(@files) {
+if($filesListLength > 0) {
+	foreach(@files) {
 
-	$_ =~ s/\s/\\ /g;
+		$_ =~ s/\s/\\ /g;
 
-	$newFilename = substr($_, 0, -4) . ".mp4";
-	$command = "avconv -i $_ -codec copy $newFilename";
+		$newFilename = substr($_, 0, -4) . ".mp4";
+		$command = "avconv -i $_ -codec copy $newFilename";
 
-	print `$command`;
+		print `$command`;
+	}
 }
